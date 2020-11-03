@@ -2,8 +2,8 @@ import numpy as np
 from NeuralNetwork import NeuralNetwork as NN
 from GUIManager import GUIManager
 
-HEIGHT = 800
-WIDTH = 800
+HEIGHT = 600
+WIDTH = 600
 
 # inputVect = [1, 2, 3]
 # weight3DArr = [[[0.5, 0.7, 0.5],
@@ -16,7 +16,7 @@ WIDTH = 800
 #               [0, 1]]
 # layerSizes = [len(biasVect) for biasVect in biasMatrix]
 
-layerSizes = [3, 8, 6, 4]
+layerSizes = [3, 8, 7, 4]
 nn = NN.createRandomParameterNN(layerSizes)
 guiManager = GUIManager(WIDTH, HEIGHT, layerSizes, nn.getInputs(), nn.getOutputMatrix(), nn.getWeights(), nn.getBiases())
 # print(nn.getOutputMatrix())

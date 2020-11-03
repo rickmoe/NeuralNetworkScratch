@@ -28,10 +28,12 @@ class GUIManager:
                 y1 = layerHeight * (j + GUIManager.NEURON_GAP_PERCENT / 2) + heightOffset
                 y2 = layerHeight * ((j + 1) - GUIManager.NEURON_GAP_PERCENT / 2) + heightOffset
                 currY.append((y1 + y2) / 2)
-                if i < len(layerSizes) - 1:
-                    neuronColor = GUI.getColorScaledInfinite(self.neuronValueMatrix[i][j], 0.06, GUI.palette['white'], GUI.palette['green'])
-                else:
+                if i == len(layerSizes) - 1:
                     neuronColor = GUI.getColorScaledExponential(self.neuronValueMatrix[i][j], 4, 0.0, 1.0, GUI.palette['white'], GUI.palette['orange'])
+                elif i == 0:
+                    neuronColor = GUI.getColorScaledExponential(self.neuronValueMatrix[i][j], 2, 0.0, 1.0, GUI.palette['white'], GUI.palette['indigo'])
+                else:
+                    neuronColor = GUI.getColorScaledInfinite(self.neuronValueMatrix[i][j], 0.06, GUI.palette['white'], GUI.palette['green'])
                 self.gui.createOvalCorner(x1, y1, x2, y2, fillRGB=neuronColor, outlineRGB=GUI.palette['black'],
                                           text=str(round(self.neuronValueMatrix[i][j], 6)), width=1)
                 for count, y in enumerate(prevY):

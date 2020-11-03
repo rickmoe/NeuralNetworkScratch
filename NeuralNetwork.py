@@ -81,6 +81,5 @@ class NeuralNetwork:
 
     @staticmethod
     def createRandomParameterNN(layerSizes):
-        layerSizes = layerSizes
         inputVect, weight3DArr, biasMatrix = NeuralNetwork.generateRandomParameters(layerSizes)
         return NeuralNetwork(layerSizes[1:], inputVect=inputVect, weight3DArr=weight3DArr, biasMatrix=biasMatrix)

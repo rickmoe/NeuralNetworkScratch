@@ -4,7 +4,7 @@ class GUI:
 
     palette = {'blue': [64, 64, 255], 'red': [255, 0, 0], 'black': [0, 0, 0], 'white': [208, 208, 208],
                'light_gray': [192, 192, 192], 'green': [32, 192, 32], 'light_purple': [192, 128, 192],
-               'orange': [255, 80, 0]}
+               'orange': [255, 80, 0], 'indigo': [128, 0, 128]}
 
     def __init__(self, width, height):
         self.height = height
