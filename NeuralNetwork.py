@@ -54,12 +54,27 @@ class NeuralNetwork:
         weightMatrix0 = np.array(self.weight3DArr[0])
         inVect = self.inputVect.T
         self.outputMatrix[0] = np.matmul(weightMatrix0, inVect) + self.biasMatrix[0]
+        NeuralNetwork.hiddenLayerActivationFunction(self.outputMatrix[0])
         for i in range(1, len(self.layers)):
             self.outputMatrix[i] = np.matmul(self.weight3DArr[i], np.array(self.outputMatrix[i - 1]).T) + self.biasMatrix[i]
+            if i < len(self.layers) - 1:
+                NeuralNetwork.hiddenLayerActivationFunction(self.outputMatrix[i])
+            else:
+                self.outputMatrix[i] = NeuralNetwork.outputLayerActivationFunction(self.outputMatrix[i])
+
+    @staticmethod
+    def hiddenLayerActivationFunction(layerVals):     # Rectified Linear
+        for i in range(len(layerVals)):
+            layerVals[i] = max(layerVals[i], 0)
+
+    @staticmethod
+    def outputLayerActivationFunction(layerVals):     # Softmax
+        e_layerVals = np.exp(layerVals - np.max(layerVals))
+        return e_layerVals / e_layerVals.sum()
 
     @staticmethod
     def generateRandomParameters(layerSizes):
-        inputVect = np.random.uniform(low=-1.0, high=1.0, size=(layerSizes[0],))
+        inputVect = np.random.uniform(low=0.0, high=1.0, size=(layerSizes[0],))
         weight3DArr = np.array([np.random.uniform(low=-1.0, high=1.0, size=(layerSizes[i],layerSizes[i-1])) for i in range(1, len(layerSizes))], dtype=object)
         biasMatrix = np.array([np.random.uniform(low=0.0, high=0.0, size=(layerSizes[i],)) for i in range(1, len(layerSizes))], dtype=object)
         return inputVect, weight3DArr, biasMatrix
