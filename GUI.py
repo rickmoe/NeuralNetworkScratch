@@ -6,13 +6,13 @@ class GUI:
                'light_gray': [192, 192, 192], 'green': [32, 192, 32], 'light_purple': [192, 128, 192],
                'orange': [255, 80, 0], 'indigo': [128, 0, 128]}
 
-    def __init__(self, width, height):
+    def __init__(self, title, width, height):
+        self.title = title
         self.height = height
         self.width = width
         self.root = Tk()
-        self.root.title("Neural Net Visualizer")
+        self.root.title(self.title)
         self.root.resizable(False, False)
-
         self.canvas = Canvas(self.root, height=height, width=width, bg=rgbToHex(GUI.palette['light_gray']))
         self.canvas.pack()
 

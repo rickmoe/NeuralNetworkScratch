@@ -1,25 +1,11 @@
-import numpy as np
-from NeuralNetwork import NeuralNetwork as NN
 from GUIManager import GUIManager
 
 HEIGHT = 600
 WIDTH = 600
 
-# inputVect = [1, 2, 3]
-# weight3DArr = [[[0.5, 0.7, 0.5],
-#                 [0.5, 0.2, 0.4],
-#                 [1, 2.1, 15],
-#                 [8, 0.3, 12]],
-#                [[1, 1, 1, 1],
-#                 [2, 2, 2, 2]]]
-# biasMatrix = [[2, 1, 4, 3],
-#               [0, 1]]
-# layerSizes = [len(biasVect) for biasVect in biasMatrix]
-
 layerSizes = [3, 8, 7, 4]
-nn = NN.createRandomParameterNN(layerSizes)
-guiManager = GUIManager(WIDTH, HEIGHT, layerSizes, nn.getInputs(), nn.getOutputMatrix(), nn.getWeights(), nn.getBiases())
-# print(nn.getOutputMatrix())
-# print()
-# print(nn.getOutputs())
-# print(nn.getOutput())
+layerSizes2 = [8, 4, 4, 3]
+
+gm = GUIManager()
+gm.createNN("NN1", WIDTH, HEIGHT, layerSizes, gui=True)
+gm.createNN("NN2", WIDTH, HEIGHT, layerSizes2, gui=True)

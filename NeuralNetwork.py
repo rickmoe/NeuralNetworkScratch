@@ -10,6 +10,7 @@ class NeuralNetwork:
             weight3DArr = [[[]]]
         if biasMatrix is None:
             biasMatrix = [[]]
+        self.layerSizes = [len(inputVect)] + layerSizes
         self.inputVect = np.array(inputVect)
         self.weight3DArr = np.array(weight3DArr, dtype=object)
         self.biasMatrix = np.array(biasMatrix, dtype=object)
@@ -17,6 +18,9 @@ class NeuralNetwork:
         self.outputMatrix.append(self.inputVect)
         self.outputMatrix = np.array(self.outputMatrix, dtype=object)
         self.layers = [Layer(layerSizes[i], inputVect=self.outputMatrix[i - 1], weightMatrix=weight3DArr[i], biasVect=biasMatrix[i]) for i in range(len(layerSizes))]
+
+    def getLayerSizes(self):
+        return self.layerSizes
 
     def getInputs(self):
         return self.inputVect
