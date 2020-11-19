@@ -1,5 +1,5 @@
 import numpy as np
-from Layer import Layer
+from NeuralNetFramework.Layer import Layer
 
 class NeuralNetwork:
 
@@ -27,6 +27,9 @@ class NeuralNetwork:
 
     def setInputs(self, inVect):
         self.inputVect = np.array(inVect)
+
+    def setInput(self, index, val):
+        self.inputVect[index] = val
 
     def getWeights(self):
         return self.weight3DArr

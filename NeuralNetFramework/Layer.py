@@ -1,5 +1,5 @@
 import numpy as np
-from Neuron import Neuron
+from NeuralNetFramework.Neuron import Neuron
 
 class Layer:
 

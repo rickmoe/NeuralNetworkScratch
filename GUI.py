@@ -1,3 +1,4 @@
+import numpy as np
 from tkinter import *
 
 class GUI:
@@ -5,16 +6,57 @@ class GUI:
     palette = {'blue': [64, 64, 255], 'red': [255, 0, 0], 'black': [0, 0, 0], 'white': [208, 208, 208],
                'light_gray': [192, 192, 192], 'green': [32, 192, 32], 'light_purple': [192, 128, 192],
                'orange': [255, 80, 0], 'indigo': [128, 0, 128]}
+    ENTRY_SIZE = 20
+    LAYER_GAP_PERCENT = 0.6
+    NEURON_GAP_PERCENT = 0.1
 
-    def __init__(self, title, width, height):
-        self.title = title
+    def __init__(self, width, height, nnMan):
         self.height = height
         self.width = width
+        self.nnMan = nnMan
         self.root = Tk()
-        self.root.title(self.title)
         self.root.resizable(False, False)
-        self.canvas = Canvas(self.root, height=height, width=width, bg=rgbToHex(GUI.palette['light_gray']))
+        self.canvas = Canvas(self.root, height=height + self.ENTRY_SIZE, width=width, bg=rgbToHex(GUI.palette['light_gray']))
         self.canvas.pack()
+        self.currNNIndex = 0
+        self.setCurrNN(self.currNNIndex)
+
+    def drawNNGUI(self, layerSizes, inputVect, outputMatrix, weight3DArr, biasMatrix):
+        self.canvas.delete("all")
+        self.root.title('Neural Net {}'.format(self.currNNIndex))
+        self.valueMatrix = [list(inputVect)]
+        for i in range(len(outputMatrix)):
+           self.valueMatrix.append(outputMatrix[i].tolist())
+        layerWidth = (1 / len(layerSizes))
+        layerHeight = (1 / max(layerSizes))
+        maxWeight = abs(max([max([max([weight3DArr[i][j][k] for k in range(len(weight3DArr[i][j]))], key=abs)
+                                  for j in range(len(weight3DArr[i]))], key=abs)
+                             for i in range(len(weight3DArr))], key=abs))
+        prevX, currY, prevY = 0, [], []
+        for i in range(len(layerSizes)):
+            x1 = layerWidth * (i + self.LAYER_GAP_PERCENT / 2)
+            x2 = layerWidth * ((i + 1) - self.LAYER_GAP_PERCENT / 2)
+            heightOffset = (max(layerSizes) - layerSizes[i]) * layerHeight / 2
+            for j in range(layerSizes[i]):
+                y1 = layerHeight * (j + self.NEURON_GAP_PERCENT / 2) + heightOffset
+                y2 = layerHeight * ((j + 1) - self.NEURON_GAP_PERCENT / 2) + heightOffset
+                currY.append((y1 + y2) / 2)
+                if i == len(layerSizes) - 1:
+                    neuronColor = self.getColorScaledExponential(self.valueMatrix[i][j], 4, 0.0, 1.0, GUI.palette['white'], GUI.palette['orange'])
+                elif i == 0:
+                    neuronColor = self.getColorScaledExponential(self.valueMatrix[i][j], 2, 0.0, 1.0, GUI.palette['white'], GUI.palette['indigo'])
+                else:
+                    neuronColor = self.getColorScaledInfinite(self.valueMatrix[i][j], 0.06, GUI.palette['white'], GUI.palette['green'])
+                self.createOvalCorner(x1, y1, x2, y2, fillRGB=neuronColor, outlineRGB=GUI.palette['black'], text=str(round(self.valueMatrix[i][j], 6)), width=1)
+                for count, y in enumerate(prevY):
+                    self.createColorsScaledLine(prevX, y, x1, (y1 + y2) / 2, weight3DArr[i - 1][j][count], -maxWeight, maxWeight,
+                                                GUI.palette['red'], GUI.palette['blue'], color3=GUI.palette['light_purple'],
+                                                width=int(abs(weight3DArr[i - 1][j][count]) * 3))
+            prevY = currY.copy()
+            currY.clear()
+            prevX = x2
+        self.createCommandBox()
+        self.runMainLoop()
 
     def createOvalCenter(self, relx, rely, relRx, relRy, fillRGB=None, outlineRGB=None, text="", **kwargs):
         relx *= self.width
@@ -39,11 +81,41 @@ class GUI:
         rely2 *= self.height
         self.canvas.create_line(relx1, rely1, relx2, rely2, fill=rgbToHex(fillRGB), **kwargs)
 
+    def createCommandBox(self):
+        self.cmdTxt = StringVar()
+        self.cmdBox = Entry(self.root, bg=rgbToHex(GUI.palette['white']), width=100, textvariable=self.cmdTxt)
+        self.cmdBox.place(x=0, y=self.height)
+        self.root.bind('<Return>', self.checkCommand)
+        self.cmdBox.focus()
+
     def createColorsScaledLine(self, relx1, rely1, relx2, rely2, val, minVal, maxVal, color1, color2, color3=None, **kwargs):
         self.createLine(relx1, rely1, relx2, rely2, fillRGB=GUI.getColorScaleValue(val, minVal, maxVal, color1, color2, color3=color3), **kwargs)
 
     def runMainLoop(self):
         self.root.mainloop()
+
+    def checkCommand(self, event):
+        cmd = self.cmdBox.get()
+        if 'disp' in cmd:
+            nums = [int(i) for i in cmd.split() if i.isdigit()]
+            if len(nums) > 0:
+                self.setCurrNN(nums[0])
+        elif 'inp' in cmd:
+            nums = [float(i) for i in cmd.split() if i[0].isdigit()]
+            if len(nums) > 1:
+                try:
+                    self.nnMan.getNNs()[self.currNNIndex].setInput(int(nums[0]), nums[1])
+                except:
+                    print("Can't set input")
+                self.setCurrNN(self.currNNIndex)
+        elif 'q' is cmd:
+            self.root.destroy()
+        self.cmdTxt.set("")
+
+    def setCurrNN(self, nnIndex):
+        self.currNNIndex = nnIndex
+        nn = self.nnMan.getNNs()[nnIndex]
+        self.drawNNGUI(nn.layerSizes, nn.getInputs(), nn.getOutputMatrix(), nn.getWeights(), nn.getBiases())
 
     @staticmethod
     def getColorScaleValue(val, minVal, maxVal, color1, color2, color3=None):
