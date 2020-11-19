@@ -5,7 +5,7 @@ class NeuralNetManager:
     def __init__(self):
         self.nns = []
 
-    def createNN(self, title, layerSizes):
+    def createNN(self, layerSizes):
         nn = NN.createRandomParameterNN(layerSizes)
         self.nns.append(nn)
 

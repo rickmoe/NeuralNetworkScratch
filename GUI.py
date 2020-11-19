@@ -23,7 +23,7 @@ class GUI:
 
     def drawNNGUI(self, layerSizes, inputVect, outputMatrix, weight3DArr, biasMatrix):
         self.canvas.delete("all")
-        self.root.title('Neural Net {}'.format(self.currNNIndex))
+        self.root.title(self.getCurrNN().getTitle())
         self.valueMatrix = [list(inputVect)]
         for i in range(len(outputMatrix)):
            self.valueMatrix.append(outputMatrix[i].tolist())
@@ -96,11 +96,14 @@ class GUI:
 
     def checkCommand(self, event):
         cmd = self.cmdBox.get()
-        if 'disp' in cmd:
+        if cmd.startswith('d'):
             nums = [int(i) for i in cmd.split() if i.isdigit()]
             if len(nums) > 0:
-                self.setCurrNN(nums[0])
-        elif 'inp' in cmd:
+                try:
+                    self.setCurrNN(nums[0])
+                except:
+                    print("Can't change display")
+        elif cmd.startswith('i'):
             nums = [float(i) for i in cmd.split() if i[0].isdigit()]
             if len(nums) > 1:
                 try:
@@ -114,8 +117,11 @@ class GUI:
 
     def setCurrNN(self, nnIndex):
         self.currNNIndex = nnIndex
-        nn = self.nnMan.getNNs()[nnIndex]
+        nn = self.getCurrNN()
         self.drawNNGUI(nn.layerSizes, nn.getInputs(), nn.getOutputMatrix(), nn.getWeights(), nn.getBiases())
+
+    def getCurrNN(self):
+        return self.nnMan.getNNs()[self.currNNIndex]
 
     @staticmethod
     def getColorScaleValue(val, minVal, maxVal, color1, color2, color3=None):

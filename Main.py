@@ -4,11 +4,10 @@ from GUI import GUI
 WIDTH = 600
 HEIGHT = 600
 
-layerSizes = [3, 8, 7, 4]
-layerSizes2 = [8, 4, 4, 3]
+layerSizeMatrix = [[3, 8, 7, 4], [8, 4, 4, 3], [3, 2, 2, 1], [14, 12, 11, 10], [5, 4, 3, 2, 1], [2, 3, 1], [6, 1, 1, 5], [3, 4, 6, 2], [1, 2, 2, 1], [5, 6, 7, 8]]
 
 nnMan = NeuralNetManager()
-nnMan.createNN("NN1", layerSizes)
-nnMan.createNN("NN2", layerSizes)
+for layerSizeList in layerSizeMatrix:
+    nnMan.createNN(layerSizeList)
 
 gui = GUI(WIDTH, HEIGHT, nnMan)

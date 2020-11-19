@@ -3,13 +3,14 @@ from NeuralNetFramework.Layer import Layer
 
 class NeuralNetwork:
 
-    def __init__(self, layerSizes, inputVect=None, weight3DArr=None, biasMatrix=None):
-        if inputVect is None:
-            inputVect = []
-        if weight3DArr is None:
-            weight3DArr = [[[]]]
-        if biasMatrix is None:
-            biasMatrix = [[]]
+    DEFAULT_NAMES = 0
+
+    def __init__(self, layerSizes, inputVect, weight3DArr, biasMatrix, title=None):
+        if title == None:
+            title = 'Neural Network #{}'.format(NeuralNetwork.DEFAULT_NAMES)
+        if 'Neural Network #' in title:
+            NeuralNetwork.DEFAULT_NAMES += 1
+        self.title = title
         self.layerSizes = [len(inputVect)] + layerSizes
         self.inputVect = np.array(inputVect)
         self.weight3DArr = np.array(weight3DArr, dtype=object)
@@ -18,6 +19,9 @@ class NeuralNetwork:
         self.outputMatrix.append(self.inputVect)
         self.outputMatrix = np.array(self.outputMatrix, dtype=object)
         self.layers = [Layer(layerSizes[i], inputVect=self.outputMatrix[i - 1], weightMatrix=weight3DArr[i], biasVect=biasMatrix[i]) for i in range(len(layerSizes))]
+
+    def getTitle(self):
+        return self.title
 
     def getLayerSizes(self):
         return self.layerSizes
