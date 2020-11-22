@@ -32,6 +32,7 @@ class GUI:
         maxWeight = abs(max([max([max([weight3DArr[i][j][k] for k in range(len(weight3DArr[i][j]))], key=abs)
                                   for j in range(len(weight3DArr[i]))], key=abs)
                              for i in range(len(weight3DArr))], key=abs))
+        maxBias = abs(max([max([biasMatrix[i][j] for j in range(len(biasMatrix[i]))], key=abs) for i in range(len(biasMatrix))], key=abs))
         prevX, currY, prevY = 0, [], []
         for i in range(len(layerSizes)):
             x1 = layerWidth * (i + self.LAYER_GAP_PERCENT / 2)
@@ -48,6 +49,14 @@ class GUI:
                 else:
                     neuronColor = self.getColorScaledInfinite(self.valueMatrix[i][j], 0.06, GUI.palette['white'], GUI.palette['green'])
                 self.createOvalCorner(x1, y1, x2, y2, fillRGB=neuronColor, outlineRGB=GUI.palette['black'], text=str(round(self.valueMatrix[i][j], 6)), width=1)
+                if i > 0:
+                    if biasMatrix[i - 1][j] > 0:
+                        self.createColorsScaledLine((x1 + x2) / 2, (y1 + y2) / 2 + layerHeight * 0.15, (x1 + x2) / 2, (y1 + y2) / 2 + layerHeight * 0.35,
+                                                    biasMatrix[i - 1][j], -maxBias, maxBias,
+                                                    GUI.palette['red'], GUI.palette['blue'], color3=neuronColor, width=4)
+                    self.createColorsScaledLine((x1 + x2) / 2 - layerWidth * 0.05, (y1 + y2) / 2 + layerHeight * 0.25, (x1 + x2) / 2 + layerWidth * 0.05, (y1 + y2) / 2 + layerHeight * 0.25,
+                                                biasMatrix[i - 1][j], -maxBias, maxBias,
+                                                GUI.palette['red'], GUI.palette['blue'], color3=neuronColor, width=4)
                 for count, y in enumerate(prevY):
                     self.createColorsScaledLine(prevX, y, x1, (y1 + y2) / 2, weight3DArr[i - 1][j][count], -maxWeight, maxWeight,
                                                 GUI.palette['red'], GUI.palette['blue'], color3=GUI.palette['light_purple'],

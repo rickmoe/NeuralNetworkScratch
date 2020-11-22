@@ -86,8 +86,8 @@ class NeuralNetwork:
     @staticmethod
     def generateRandomParameters(layerSizes):
         inputVect = np.random.uniform(low=0.0, high=1.0, size=(layerSizes[0],))
-        weight3DArr = np.array([np.random.uniform(low=-1.0, high=1.0, size=(layerSizes[i],layerSizes[i-1])) for i in range(1, len(layerSizes))], dtype=object)
-        biasMatrix = np.array([np.random.uniform(low=0.0, high=0.0, size=(layerSizes[i],)) for i in range(1, len(layerSizes))], dtype=object)
+        weight3DArr = np.array([np.random.uniform(low=-1.0, high=1.0, size=(layerSizes[i], layerSizes[i-1])) for i in range(1, len(layerSizes))], dtype=object)
+        biasMatrix = np.array([np.random.uniform(low=-1.0, high=1.0, size=(layerSizes[i],)) for i in range(1, len(layerSizes))], dtype=object)
         return inputVect, weight3DArr, biasMatrix
 
     @staticmethod
